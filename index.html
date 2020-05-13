@@ -1,0 +1,160 @@
+<!--
+    JAMES PICO DOMÍNGUEZ
+    8-924-154
+    1LS-141
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Laboratorio 1 | Des9 | JS</title>
+</head>
+<body>
+    <!--CONTAINER-->
+    <div class="container mt-4 mb-4">
+        <div class="row justify-content-center">
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="card-title text-center">Formulario</h1>
+                    </div>
+                    <div class="card-body">
+                        <!--FORM-->
+                        <form action="" method="POST">
+                            <label for="productName">Nombre del producto</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" name="productName" id="productName">
+                            </div>
+                            <label for="productPrice">Precio del producto</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" step="0.01" name="productPrice" id="productPrice">
+                            </div>
+                            <label for="quantity">Cantidad del producto</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" name="quantity" id="quantity">
+                            </div>
+                            <div class="input-group mb-3">
+                                <button type="submit" class="btn btn-primary btn-block" id="btnSubmit">Enviar</button>
+                            </div>
+                        </form>
+                        <!--END FORM-->
+                        <!--DIV TO CALCULATE INPUTS-->
+                        <div class="mt-2" id="divTotales" style="display:none;">
+                            <label for="subTotal">SubTotal</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" name="subTotal" id="subTotal" disabled>
+                            </div>
+                            <label for="itbms">Itbms</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" name="itbms" id="itbms" disabled>
+                            </div>
+                            <label for="totalPrice">Total</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" name="totalPrice" id="totalPrice" disabled>
+                            </div>
+                            <div class="input-group mb-3">
+                                <button class="btn btn-primary btn-block" id="btnBack">Volver a ingresar datos</button>
+                            </div>
+                        </div>
+                        <!--END DIV-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END CONTAINER-->
+    <!--BOOTSTRAP SCRIPTS-->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <!--SCRIPT MAIN-->
+    <script>
+        $(function(){
+            $('form').submit((e)=>{
+                
+                //para evitar que se recargue la página
+                e.preventDefault();
+
+                //variables
+                let btnSubmit = document.getElementById('btnSubmit');
+                let productName = document.querySelector('#productName');
+                let productPrice = document.querySelector('#productPrice');
+                let quantity = document.querySelector('#quantity');
+                let subTotal = document.getElementById('subTotal');
+                let itbms = document.getElementById('itbms');
+                let totalPrice = document.getElementById('totalPrice');
+                let divTotales = document.getElementById('divTotales');
+                let btnBack = document.getElementById('btnBack');
+                
+                //valida que no esten nulos
+                if( productName.value==='' || 
+                    productPrice.value==='' || 
+                    quantity.value===''){
+
+                    alert('Debe llenar todos los campos');
+                    
+                }
+                else{
+                    //expresion regular para validar que solo se ingrese letras del formato unicode
+                    if(!productName.value.match(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g) &&
+                        productPrice.value!==''){
+
+                        alert('El nombre del producto solo debe tener letras');
+
+                    }
+                    //expresion regular para validar que se ingrese numeros y decimales con maximo de 2
+                    else if(!productPrice.value.match(/^([0-9]+\.?[0-9]{0,2})$/) ||
+                            productPrice.value<=0){
+
+                        alert('El precio del producto debe ser mayor que 0, no es númerico, decimal o tiene mas de dos decimales');
+
+                    }
+                    //expresion regular para validar que solo se ingrese numeros
+                    else if(!quantity.value.match(/^([0-9])*$/) ||
+                            quantity.value<=0){
+
+                        alert('La cantidad del producto debe ser mayor que 0 ó no es un número');
+
+                    }
+                    else{
+                    
+                        //para desactivar el botón
+                        btnSubmit.disabled = true;
+                        productName.disabled = true;
+                        productPrice.disabled = true;
+                        quantity.disabled = true;
+                        //para calcular los totales
+                        subTotal.value='$'+productPrice.value*quantity.value;
+                        itbms.value='$'+(productPrice.value*quantity.value)*0.07;
+                        totalPrice.value='$'+(productPrice.value*quantity.value)*1.07;
+                        //para mostrar el div
+                        divTotales.style.display = 'block';
+
+                        //para realizar nuevos calculos
+                        btnBack.onclick = ()=> {
+
+                            //para activar el boton
+                            btnSubmit.disabled = false;
+                            productName.disabled = false;
+                            productPrice.disabled = false;
+                            quantity.disabled = false;
+                            //para limpiar los inputs
+                            productName.value='';
+                            productPrice.value='';
+                            quantity.value='';
+                            //para ocultar el div
+                            divTotales.style.display = 'none';
+
+                        };
+
+                    }
+                }
+
+            });
+        });
+    </script>
+    <!--END SCRIPT MAIN-->
+</body>
+</html>
